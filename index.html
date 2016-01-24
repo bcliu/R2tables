@@ -31,12 +31,12 @@
         <div class="row" ng-show='rOutput != ""'>
             <div class='col-lg-2'>&nbsp;</div>
             <div class="col-lg-8">
-                <label>STEP 2:</label> Pick the columns to keep:
+                <label>STEP 2:</label> Click on the columns to pick:
                 <div class="form-group">
                     <table id='table' class="table" ng-mouseleave='columnHovered(-1)'>
                         <tr ng-repeat='line in parsed' style='cursor: pointer'>
                             <td ng-repeat='cell in line' ng-mouseover='columnHovered($index)'
-                                class='{{ columnHoveredOn == $index ? "bg-info" : ""}}' ng-click='columnClicked($index)'>
+                                class='{{ getColumnClass($index) }}' ng-click='columnClicked($index)'>
                                 {{ cell }}
                             </td>
                         </tr>
