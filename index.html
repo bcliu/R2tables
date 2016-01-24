@@ -31,7 +31,7 @@
         <div class="row" ng-show='rOutput != ""'>
             <div class='col-lg-2'>&nbsp;</div>
             <div class="col-lg-8">
-                <label>STEP 2:</label> Click on the columns to pick:
+                <label>STEP 2:</label> Click on the columns to keep:
                 <div class="form-group">
                     <table id='table' class="table" ng-mouseleave='columnHovered(-1)'>
                         <tr ng-repeat='line in parsed' style='cursor: pointer'>
@@ -41,6 +41,18 @@
                             </td>
                         </tr>
                     </table>
+                </div>
+            </div>
+            <div class='col-lg-2'>&nbsp;</div>
+        </div>
+        
+        <div class='row' ng-show='areColumnsSelected()' style='margin-bottom: 50px'>
+            <div class='col-lg-2'>&nbsp;</div>
+            <div class="col-lg-8">
+                <label>STEP 3:</label> Generate <button type="button" class="btn btn-default" ng-click='getMarkdown()'>Markdown</button> or
+                    <button type="button" class="btn btn-default" ng-click='getLatex()'>LaTeX</button> code
+                <div class="form-group" style='margin-top: 20px'>
+                    <textarea class="form-control" placeholder="Output" rows='14' ng-model='formatted' style='font-family: monospace'></textarea>
                 </div>
             </div>
             <div class='col-lg-2'>&nbsp;</div>

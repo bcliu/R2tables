@@ -36,7 +36,7 @@ app.controller('MainController', ['$scope', function ($scope) {
                 return;
             }
             /* Hack: merge all < with the number after it, in case of < 2e-16 */
-            var tokens = trimmed.replace('< ', '<').split(/\s+/);
+            var tokens = trimmed.replace(new RegExp('< ', 'g'), '<').split(/\s+/);
             if (tokens.length > maxNumColumns) {
                 maxNumColumns = tokens.length;
             }
@@ -66,5 +66,85 @@ app.controller('MainController', ['$scope', function ($scope) {
             return 'bg-info';
         }
         return '';
+    };
+    
+    $scope.areColumnsSelected = function () {
+        var ret = false;
+        angular.forEach($scope.selectedColumns, function (e, i) {
+            if (e) {
+                ret = true;
+            }
+        });
+        return ret;
+    };
+    
+    $scope.getSelectedColumnText = function () {
+        var lines = [];
+        angular.forEach($scope.parsed, function (e, i) {
+            var line = [];
+            angular.forEach($scope.selectedColumns, function (e2, i2) {
+                if (e2) {
+                    line.push(e[i2]);
+                }
+            });
+            lines.push(line);
+        });
+        return lines;
+    };
+    
+    $scope.generateHeaders = function (num) {
+        var headers = [];
+        for (var i = 0; i < num; i++) {
+            headers.push("COLUMN.NAME." + (i + 1));
+        }
+        return headers;
+    };
+    
+    $scope.generateArray = function (str, num) {
+        var ret = [];
+        for (var i = 0; i < num; i++) {
+            ret.push(str);
+        }
+        return ret;
+    };
+    
+    $scope.getLatex = function () {
+        var formattedLines = [];
+        var lines = $scope.getSelectedColumnText();
+        var numColumns = lines[0].length;
+        
+        formattedLines.push('\\begin{tabular}{ | ' + $scope.generateArray('c', numColumns).join(' ') + ' | }');
+        formattedLines.push('\\hline');
+        formattedLines.push('    ' + $scope.generateHeaders(numColumns).join(' & ') + ' \\\\ \\hline');
+        
+        angular.forEach(lines, function (e, i) {
+            var sanitizedStrings = [];
+            /* Need to get rid of symbols like _ for LaTeX */
+            angular.forEach(e, function (e2, i2) {
+                sanitizedStrings.push(e2.replace(new RegExp('_', 'g'), ' '));
+            });
+            formattedLines.push('    ' + sanitizedStrings.join(' & ') + ' \\\\');
+        });
+        
+        formattedLines.push('\\hline');
+        formattedLines.push('\\end{tabular}');
+        
+        $scope.formatted = formattedLines.join('\n');
+    };
+    
+    $scope.getMarkdown = function () {
+        var formattedLines = [];
+        var lines = $scope.getSelectedColumnText();
+        var numColumns = lines[0].length;
+        
+        var headers = $scope.generateHeaders(numColumns);
+        formattedLines.push('| ' + headers.join(' | ') + '|');
+        formattedLines.push('|' + $scope.generateArray('-----', numColumns).join('|') + '|');
+        
+        angular.forEach(lines, function (e, i) {
+            formattedLines.push('| ' + e.join(' | ') + ' |');
+        });
+        
+        $scope.formatted = formattedLines.join('\n');
     };
 }]);
