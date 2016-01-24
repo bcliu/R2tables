@@ -6,4 +6,44 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
         <script src='app.js'></script>
     </head>
+    
+    <body>
+        <div class="row">
+            <div class='col-lg-2'>&nbsp;</div>
+            <div class="col-lg-8">
+                <h2><b>R2Tables</b></h2>
+                <h4 style='color: gray'>Convert R output to Markdown/LaTeX tables</h4>
+            </div>
+            <div class='col-lg-2'>&nbsp;</div>
+        </div>
+        
+        <div class="row" style="margin-top: 20px">
+            <div class='col-lg-2'>&nbsp;</div>
+            <div class="col-lg-8">
+                <label>STEP 1:</label> Paste R output of the <code>summary(lm(...))</code> command, starting from the line below column headers: (Try <a href='javascript: ;' ng-click='loadExample()'>an example</a>)
+                <div class="form-group">
+                    <textarea class="form-control" placeholder="Paste the raw R output here" rows='14' ng-model='rOutput' ng-change='parseOutput()' style='font-family: monospace'></textarea>
+                </div>
+            </div>
+            <div class='col-lg-2'>&nbsp;</div>
+        </div>
+        
+        <div class="row" ng-show='rOutput != ""'>
+            <div class='col-lg-2'>&nbsp;</div>
+            <div class="col-lg-8">
+                <label>STEP 2:</label> Pick the columns to keep:
+                <div class="form-group">
+                    <table id='table' class="table" ng-mouseleave='columnHovered(-1)'>
+                        <tr ng-repeat='line in parsed' style='cursor: pointer'>
+                            <td ng-repeat='cell in line' ng-mouseover='columnHovered($index)'
+                                class='{{ columnHoveredOn == $index ? "bg-info" : ""}}' ng-click='columnClicked($index)'>
+                                {{ cell }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class='col-lg-2'>&nbsp;</div>
+        </div>
+    </body>
 </html>
